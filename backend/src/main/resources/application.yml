@@ -17,3 +17,16 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+  # Day 9 Mail Configuration (Fixes JavaMailSender Startup Crash)
+  mail:
+    host: localhost
+    port: 25
+    username: test-user
+    password: test-password
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false

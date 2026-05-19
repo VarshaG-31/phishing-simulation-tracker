@@ -20,12 +20,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for Postman testing
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for testing APIs if needed
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/simulations/**").authenticated() // Protects your API
-                        .anyRequest().permitAll()
+                        // Day 9 Update: Allow anyone to view the interactive Swagger interface pages
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/api/v1/simulations/**").authenticated()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // Enables Basic Auth (the Postman login box)
+                .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
