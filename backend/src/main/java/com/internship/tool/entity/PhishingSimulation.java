@@ -25,6 +25,10 @@ public class PhishingSimulation implements Serializable {
     @Column(nullable = false)
     private String name;
 
+    // --- DAY 7 FIX: Added templateName to match the service layer ---
+    @Column(name = "template_name")
+    private String templateName;
+
     @Column(name = "target_department", nullable = false)
     private String targetDepartment;
 
@@ -32,7 +36,7 @@ public class PhishingSimulation implements Serializable {
     private String status;
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false) // Removed nullable=false to prevent audit crashes
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
@@ -45,6 +49,10 @@ public class PhishingSimulation implements Serializable {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    // --- DAY 7 FIX: Getter and Setter for templateName ---
+    public String getTemplateName() { return templateName; }
+    public void setTemplateName(String templateName) { this.templateName = templateName; }
 
     public String getTargetDepartment() { return targetDepartment; }
     public void setTargetDepartment(String targetDepartment) { this.targetDepartment = targetDepartment; }
