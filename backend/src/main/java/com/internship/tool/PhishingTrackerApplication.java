@@ -2,10 +2,12 @@ package com.internship.tool;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing; // Import this!
+import org.springframework.scheduling.annotation.EnableAsync;       // Day 12 Import
+import org.springframework.scheduling.annotation.EnableScheduling;  // Day 12 Import
 
 @SpringBootApplication
-@EnableJpaAuditing // Day 10 Update: Tells the framework to auto-populate timestamps
+@EnableAsync        // Activates background thread execution (@Async)
+@EnableScheduling   // Activates time-based recurring tasks (@Scheduled)
 public class PhishingTrackerApplication {
     public static void main(String[] args) {
         SpringApplication.run(PhishingTrackerApplication.class, args);
