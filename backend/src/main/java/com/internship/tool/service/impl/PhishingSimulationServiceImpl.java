@@ -1,6 +1,7 @@
 package com.internship.tool.service.impl;
 
 import com.internship.tool.entity.PhishingSimulation;
+import com.internship.tool.exception.ResourceNotFoundException; // Day 8 Exception Link
 import com.internship.tool.repository.PhishingSimulationRepository;
 import com.internship.tool.service.PhishingSimulationService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -12,9 +13,9 @@ import java.util.List;
 public class PhishingSimulationServiceImpl implements PhishingSimulationService {
 
     private final PhishingSimulationRepository repository;
-    private final NotificationService notificationService; // Added for Day 7 email capabilities
+    private final NotificationService notificationService; // Recognizes the file next to it
 
-    // Updated constructor to inject both dependencies
+    // Constructor matching both required dependencies
     public PhishingSimulationServiceImpl(PhishingSimulationRepository repository, NotificationService notificationService) {
         this.repository = repository;
         this.notificationService = notificationService;
@@ -29,8 +30,9 @@ public class PhishingSimulationServiceImpl implements PhishingSimulationService 
     @Override
     @Cacheable(value = "simulations", key = "#id")
     public PhishingSimulation getSimulationById(Long id) {
+        // Day 8 Update: Replaced generic RuntimeException with your custom ResourceNotFoundException!
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Simulation not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Simulation not found with id: " + id));
     }
 
     @Override
@@ -38,7 +40,7 @@ public class PhishingSimulationServiceImpl implements PhishingSimulationService 
     public PhishingSimulation createSimulation(PhishingSimulation simulation) {
         PhishingSimulation savedSimulation = repository.save(simulation);
 
-        // Day 7 Feature: Automatically alert the security administrator immediately when a new drill is launched
+        // Triggers email broadcast using templateName
         if ("PENDING".equalsIgnoreCase(savedSimulation.getStatus()) || "ACTIVE".equalsIgnoreCase(savedSimulation.getStatus())) {
             notificationService.sendSimulationReminder(
                     "security-coordinator@vtu-internship.local",
@@ -57,7 +59,7 @@ public class PhishingSimulationServiceImpl implements PhishingSimulationService 
         simulation.setStatus(status);
         PhishingSimulation updatedSimulation = repository.save(simulation);
 
-        // Day 7 Feature: Send an update notification when a simulation status transitions
+        // Triggers email update status broadcast using templateName
         notificationService.sendSimulationReminder(
                 "security-coordinator@vtu-internship.local",
                 updatedSimulation.getTemplateName() != null ? updatedSimulation.getTemplateName() : "Campaign Status Change",
