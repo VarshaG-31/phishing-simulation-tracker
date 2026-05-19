@@ -1,20 +1,18 @@
 package com.internship.tool.repository;
 
 import com.internship.tool.entity.PhishingSimulation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
-/**
- * Repository interface for PhishingSimulation entity.
- * Provides standard CRUD operations and custom search methods.
- */
 @Repository
 public interface PhishingSimulationRepository extends JpaRepository<PhishingSimulation, Long> {
 
-    // Custom query method to find simulations by their current status
-    List<PhishingSimulation> findByStatus(String status);
+    // Day 11 Optimization: Multi-criteria advanced filtering with native pagination
+    Page<PhishingSimulation> findByStatusAndTargetDepartment(String status, String targetDepartment, Pageable pageable);
 
-    // Custom query method to filter simulations by target department
-    List<PhishingSimulation> findByTargetDepartment(String department);
+    Page<PhishingSimulation> findByStatus(String status, Pageable pageable);
+
+    Page<PhishingSimulation> findByTargetDepartment(String targetDepartment, Pageable pageable);
 }
