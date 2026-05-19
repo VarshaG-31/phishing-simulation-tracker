@@ -30,3 +30,19 @@ spring:
           auth: false
           starttls:
             enable: false
+
+# Day 10 Update: Operational Metrics and Monitoring (Root level)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics"
+  endpoint:
+    health:
+      show-details: always
+      # Day 10 Optimization: Disables mail health check indicator so dummy mail won't mark application DOWN
+  health:
+    status:
+      order: "UP, DOWN"
+    mail:
+      enabled: false

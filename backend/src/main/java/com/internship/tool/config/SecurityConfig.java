@@ -20,11 +20,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for testing APIs if needed
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for local endpoint testing
                 .authorizeHttpRequests(auth -> auth
-                        // Day 9 Update: Allow anyone to view the interactive Swagger interface pages
+                        // Day 9 & 10 Public Paths: Open up Swagger documentation and basic health check
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
+
+                        // Secure all other Actuator metrics endpoints and your core APIs
+                        .requestMatchers("/actuator/**").authenticated()
                         .requestMatchers("/api/v1/simulations/**").authenticated()
+
+                        // Fallback security rule
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
