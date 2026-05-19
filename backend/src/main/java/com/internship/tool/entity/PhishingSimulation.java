@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,7 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class PhishingSimulation {
+public class PhishingSimulation implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,14 +32,14 @@ public class PhishingSimulation {
     private String status;
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false, nullable = false)
+    @Column(name = "created_at", updatable = false) // Removed nullable=false to prevent audit crashes
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Explicit Getters and Setters to resolve IDE errors
+    // --- GETTERS AND SETTERS ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -1,14 +1,19 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/phishing_db
-    username: postgres  # Replace '${DB_USER}' with your actual username (usually postgres)
-    password: admin123 # Replace '${DB_PASSWORD}' with your real password
+    username: postgres
+    password: admin123
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
-  security:
-        user:
-          name: user
-          password: password123
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
