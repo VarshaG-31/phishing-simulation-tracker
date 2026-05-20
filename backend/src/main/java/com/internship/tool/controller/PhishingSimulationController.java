@@ -1,54 +1,45 @@
 package com.internship.tool.controller;
 
 import com.internship.tool.entity.PhishingSimulation;
-import com.internship.tool.service.PhishingSimulationService;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page; // Day 11 Import
-import org.springframework.http.HttpStatus;
+import com.internship.tool.repository.PhishingSimulationRepository;
+import com.internship.tool.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/simulations")
+@RequestMapping("/api/simulations")
 public class PhishingSimulationController {
 
-    private final PhishingSimulationService service;
+    @Autowired
+    private PhishingSimulationRepository simulationRepository;
 
-    public PhishingSimulationController(PhishingSimulationService service) {
-        this.service = service;
-    }
+    @Autowired
+    private EmailService emailService;
 
-    // Day 11 Endpoint: Fetch simulations with Pagination, Sorting, and Dynamic Filtering
-    @GetMapping
-    public ResponseEntity<Page<PhishingSimulation>> getSimulations(
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String department,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
+    @PostMapping("/launch")
+    public ResponseEntity<PhishingSimulation> launchSimulation(
+            @RequestParam String name,
+            @RequestParam String targetDepartment,
+            @RequestParam String templateName,
+            @RequestParam String targetEmail) {
+        
+        PhishingSimulation simulation = new PhishingSimulation();
+        simulation.setName(name);
+        simulation.setTargetDepartment(targetDepartment);
+        simulation.setTemplateName(templateName);
+        simulation.setStatus("ACTIVE");
 
-        Page<PhishingSimulation> result = service.getPaginatedAndFilteredSimulations(
-                status, department, page, size, sortBy, sortDir
-        );
-        return ResponseEntity.ok(result);
-    }
+        PhishingSimulation savedSimulation = simulationRepository.save(simulation);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PhishingSimulation> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getSimulationById(id));
-    }
+        try {
+            emailService.sendSimulationEmail(targetEmail, savedSimulation.getId(), templateName);
+        } catch (Exception e) {
+            savedSimulation.setStatus("EMAIL_FAILED");
+            simulationRepository.save(savedSimulation);
+            return ResponseEntity.status(500).body(savedSimulation);
+        }
 
-    @PostMapping
-    public ResponseEntity<PhishingSimulation> create(@Valid @RequestBody PhishingSimulation simulation) {
-        return new ResponseEntity<>(service.createSimulation(simulation), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}/status")
-    public ResponseEntity<PhishingSimulation> updateStatus(
-            @PathVariable Long id,
-            @RequestParam String status) {
-        return ResponseEntity.ok(service.updateSimulationStatus(id, status));
+        return ResponseEntity.ok(savedSimulation);
     }
 }

@@ -1,7 +1,8 @@
 package com.internship.tool.service;
-
+import com.internship.tool.service.PhishingSimulationService;
 import com.internship.tool.entity.PhishingSimulation;
-import org.springframework.data.domain.Page; // Day 11 Import
+import com.internship.tool.projection.SimulationSummary;
+import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface PhishingSimulationService {
@@ -14,13 +15,8 @@ public interface PhishingSimulationService {
 
     PhishingSimulation updateSimulationStatus(Long id, String status);
 
-    // Day 11 Update: The exact matching signature contract to fix the compiler error
     Page<PhishingSimulation> getPaginatedAndFilteredSimulations(
-            String status,
-            String department,
-            int page,
-            int size,
-            String sortBy,
-            String sortDir
-    );
+            String status, String department, int page, int size, String sortBy, String sortDir);
+
+    List<SimulationSummary> getSimulationSummariesByStatus(String status);
 }

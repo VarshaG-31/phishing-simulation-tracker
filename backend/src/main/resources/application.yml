@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
 
   cache:
@@ -18,7 +18,6 @@ spring:
       host: localhost
       port: 6379
 
-  # Day 9 Mail Configuration (Fixes JavaMailSender Startup Crash)
   mail:
     host: localhost
     port: 25
@@ -31,7 +30,7 @@ spring:
           starttls:
             enable: false
 
-# Day 10 Update: Operational Metrics and Monitoring (Root level)
+# 🛠️ FIXED STRUCTURE: Management keys grouped cleanly under root
 management:
   endpoints:
     web:
@@ -40,9 +39,9 @@ management:
   endpoint:
     health:
       show-details: always
-      # Day 10 Optimization: Disables mail health check indicator so dummy mail won't mark application DOWN
+  # 🔥 FIX: "health" must be indented directly under "management", not floating separately!
   health:
-    status:
-      order: "UP, DOWN"
     mail:
       enabled: false
+    status:
+      order: "UP, DOWN"

@@ -3,7 +3,7 @@ package com.internship.tool;
 import com.internship.tool.entity.PhishingSimulation;
 import com.internship.tool.exception.ResourceNotFoundException;
 import com.internship.tool.repository.PhishingSimulationRepository;
-import com.internship.tool.service.impl.NotificationService;
+import com.internship.tool.service.NotificationService;
 import com.internship.tool.service.impl.PhishingSimulationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
